@@ -40,7 +40,7 @@ class _MainViewState extends State<MainView> {
           // ABSOLUTE
           if (widget.dm.toggleAlert)
             AlertView(
-              title: widget.dm.alertText,
+              title: widget.dm.alertTitle,
               message: widget.dm.alertText,
               actions: [
                 ButtonView(
