@@ -110,6 +110,16 @@ Future<bool> auth_DeleteUser(User user) async {
   }
 }
 
+Future<bool> auth_ForgotPassword(String email) async {
+  try {
+    await auth.sendPasswordResetEmail(email: email);
+    return true;
+  } catch (e) {
+    print('Unexpected error: $e');
+    return false;
+  }
+}
+
 // FIREBASE --------------------------------------
 //CREATE
 Future<bool> firebase_CreateDocument(
