@@ -14,7 +14,7 @@ class RoundedCornersView extends StatelessWidget {
     this.topRight = 10,
     this.bottomLeft = 10,
     this.bottomRight = 10,
-    this.backgroundColor = Colors.black12,
+    this.backgroundColor = Colors.transparent,
     required this.child,
   });
 
