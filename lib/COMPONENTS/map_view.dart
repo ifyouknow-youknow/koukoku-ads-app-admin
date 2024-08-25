@@ -14,7 +14,7 @@ class MapView extends StatefulWidget {
   final double height;
   final double delta;
   final bool isScrolling;
-  final bool isSearchable; // New field to enable or disable the search feature
+  final bool isSearchable;
   final void Function(LatLng location)? onMarkerTap;
   final LatLng? initialArea;
 
@@ -24,7 +24,7 @@ class MapView extends StatefulWidget {
     this.height = 300,
     this.delta = 0.001,
     this.isScrolling = false,
-    this.isSearchable = false, // Default to false
+    this.isSearchable = false,
     this.onMarkerTap,
     this.initialArea,
   }) : super(key: key);
@@ -35,9 +35,8 @@ class MapView extends StatefulWidget {
 
 class _MapViewState extends State<MapView> {
   late GoogleMapController _mapController;
-  Marker? _singleMarker;
-  LatLngBounds? _bounds;
   TextEditingController _searchController = TextEditingController();
+  Set<Marker> _markers = {};
 
   @override
   void initState() {
@@ -53,17 +52,21 @@ class _MapViewState extends State<MapView> {
     }
   }
 
-  void _addOrReplaceMarker(LatLng position) {
-    setState(() {
-      _singleMarker = Marker(
-        markerId: const MarkerId('single_marker'),
-        position: position,
+  void _addMarkers() {
+    Set<Marker> markers = widget.locations.map((location) {
+      return Marker(
+        markerId: MarkerId(location.toString()),
+        position: location,
         onTap: () {
           if (widget.onMarkerTap != null) {
-            widget.onMarkerTap!(position);
+            widget.onMarkerTap!(location);
           }
         },
       );
+    }).toSet();
+
+    setState(() {
+      _markers = markers;
     });
   }
 
@@ -83,7 +86,19 @@ class _MapViewState extends State<MapView> {
         _mapController.animateCamera(
           CameraUpdate.newLatLng(newPosition),
         );
-        _addOrReplaceMarker(newPosition);
+        setState(() {
+          _markers.add(
+            Marker(
+              markerId: const MarkerId('searched_location'),
+              position: newPosition,
+              onTap: () {
+                if (widget.onMarkerTap != null) {
+                  widget.onMarkerTap!(newPosition);
+                }
+              },
+            ),
+          );
+        });
       } else {
         print('Error: ${data['status']}');
       }
@@ -108,23 +123,16 @@ class _MapViewState extends State<MapView> {
           northEastLng = location.longitude;
       }
 
-      // Apply delta to expand the bounds
       double delta = widget.delta;
 
-      _bounds = LatLngBounds(
+      LatLngBounds bounds = LatLngBounds(
         southwest: LatLng(southWestLat - delta, southWestLng - delta),
         northeast: LatLng(northEastLat + delta, northEastLng + delta),
       );
 
-      // Debug print statements to verify the bounds
-      print('Southwest: ${_bounds!.southwest}');
-      print('Northeast: ${_bounds!.northeast}');
-
-      if (_mapController != null) {
-        _mapController.animateCamera(
-          CameraUpdate.newLatLngBounds(_bounds!, 50),
-        );
-      }
+      _mapController.animateCamera(
+        CameraUpdate.newLatLngBounds(bounds, 50),
+      );
     }
   }
 
@@ -132,7 +140,7 @@ class _MapViewState extends State<MapView> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (widget.isSearchable) // Show search field if isSearchable is true
+        if (widget.isSearchable)
           PaddingView(
             paddingTop: 0,
             paddingBottom: 10,
@@ -140,10 +148,7 @@ class _MapViewState extends State<MapView> {
               children: [
                 Expanded(child: TextfieldView(controller: _searchController)),
                 IconButton(
-                  icon: const Icon(
-                    Icons.search,
-                    size: 30,
-                  ),
+                  icon: const Icon(Icons.search, size: 30),
                   onPressed: () {
                     _searchLocation(_searchController.text);
                   },
@@ -157,6 +162,7 @@ class _MapViewState extends State<MapView> {
             onMapCreated: (controller) {
               _mapController = controller;
               if (widget.locations.isNotEmpty) {
+                _addMarkers();
                 _setMapBounds();
               }
             },
@@ -167,11 +173,23 @@ class _MapViewState extends State<MapView> {
                       : const LatLng(0, 0)),
               zoom: 10,
             ),
-            markers: _singleMarker != null ? {_singleMarker!} : {},
+            markers: _markers,
             scrollGesturesEnabled: widget.isScrolling,
             onTap: (position) {
               if (widget.locations.isEmpty) {
-                _addOrReplaceMarker(position);
+                setState(() {
+                  _markers.add(
+                    Marker(
+                      markerId: const MarkerId('single_marker'),
+                      position: position,
+                      onTap: () {
+                        if (widget.onMarkerTap != null) {
+                          widget.onMarkerTap!(position);
+                        }
+                      },
+                    ),
+                  );
+                });
               }
             },
           ),
