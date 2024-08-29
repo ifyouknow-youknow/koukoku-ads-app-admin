@@ -12,16 +12,20 @@ class CalendarView extends StatefulWidget {
   final Set<DateTime> highlightedDates;
   final Set<DateTime> disabledDates;
   final bool startToday;
+  final bool thisMonth;
   final Color selectedColor;
   final Color selectedTextColor;
+  final int year;
 
   CalendarView({
     super.key,
     this.backgroundColor = Colors.black12,
+    required this.year,
     required this.onTapDate,
     List<DateTime>? highlightedDates,
     List<DateTime>? disabledDates,
     this.startToday = false,
+    this.thisMonth = false,
     this.selectedColor = Colors.black,
     this.selectedTextColor = Colors.white,
   })  : highlightedDates = Set.from(highlightedDates ?? []),
@@ -32,25 +36,32 @@ class CalendarView extends StatefulWidget {
 }
 
 class _CalendarViewState extends State<CalendarView> {
-  late final PageController _pageController;
+  late PageController _pageController;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(
-      initialPage: _getInitialPage(),
-    );
+    setState(() {
+      _pageController = PageController(
+        initialPage: _getInitialPage(),
+      );
+    });
   }
 
   int _getInitialPage() {
-    if (widget.startToday) {
+    if (widget.thisMonth) {
       final today = DateTime.now();
-      final currentYear = today.year;
-      if (currentYear == 2024) {
-        return getMonthsOfYear(currentYear).indexOf(getMonthName(today.month));
+      if (today.year == widget.year) {
+        return today.month - 1;
       }
     }
-    return 0; // Default to the first month
+    return 0;
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   void onTappedDate(DateTime date) {
@@ -61,6 +72,8 @@ class _CalendarViewState extends State<CalendarView> {
 
   @override
   Widget build(BuildContext context) {
+    final months = getMonthsOfYear(widget.year);
+
     return SizedBox(
       height: 420,
       child: Column(
@@ -68,12 +81,10 @@ class _CalendarViewState extends State<CalendarView> {
           Expanded(
             child: PageView.builder(
               controller: _pageController,
-              itemCount: getMonthsOfYear(2024).length,
+              itemCount: months.length,
               itemBuilder: (context, index) {
-                final month = getMonthsOfYear(2024)[index];
-                int firstDayOfMonthWeekday =
-                    DateTime(2024, getMonthNum(month), 1).weekday;
-                int blankDays = firstDayOfMonthWeekday % 7;
+                final month = months[index];
+                final daysInMonth = getDaysOfMonth(index + 1, widget.year);
 
                 return PaddingView(
                   child: Column(
@@ -100,9 +111,8 @@ class _CalendarViewState extends State<CalendarView> {
                       ),
                       Expanded(
                         child: GridView.builder(
-                          padding: EdgeInsets.all(0),
-                          itemCount: blankDays +
-                              getDaysOfMonth(getMonthNum(month), 2024).length,
+                          padding: EdgeInsets.zero,
+                          itemCount: daysInMonth.length,
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 7,
@@ -110,17 +120,15 @@ class _CalendarViewState extends State<CalendarView> {
                             mainAxisSpacing: 4,
                             crossAxisSpacing: 4,
                           ),
-                          itemBuilder: (context, gridIndex) {
-                            if (gridIndex < blankDays) {
-                              return const SizedBox.shrink();
-                            }
-                            final dayIndex = gridIndex - blankDays;
-                            final day = getDaysOfMonth(
-                                getMonthNum(month), 2024)[dayIndex];
-                            final date =
-                                DateTime(2024, getMonthNum(month), day);
+                          itemBuilder: (context, dayIndex) {
+                            final day = daysInMonth[dayIndex];
+                            final date = DateTime(widget.year, index + 1, day);
                             final isHighlighted =
-                                widget.highlightedDates.contains(date);
+                                widget.highlightedDates.any((highlightedDate) {
+                              return highlightedDate.year == date.year &&
+                                  highlightedDate.month == date.month &&
+                                  highlightedDate.day == date.day;
+                            });
                             final isDisabled =
                                 widget.disabledDates.contains(date) ||
                                     (widget.startToday &&
@@ -132,9 +140,7 @@ class _CalendarViewState extends State<CalendarView> {
                               backgroundColor: isHighlighted
                                   ? widget.selectedColor
                                   : widget.backgroundColor,
-                              onPress: () {
-                                onTappedDate(date);
-                              },
+                              onPress: () => onTappedDate(date),
                               child: Center(
                                 child: TextView(
                                   text: day.toString(),
@@ -159,16 +165,16 @@ class _CalendarViewState extends State<CalendarView> {
           ),
           SmoothPageIndicator(
             controller: _pageController,
-            count: getMonthsOfYear(2024).length,
+            count: months.length,
             effect: const ScrollingDotsEffect(
               dotWidth: 8,
               dotHeight: 8,
-              activeDotScale: 1.5, // Controls the scale of the active dot
+              activeDotScale: 1.5,
               spacing: 12,
               dotColor: Colors.grey,
               activeDotColor: Colors.blue,
             ),
-          )
+          ),
         ],
       ),
     );
