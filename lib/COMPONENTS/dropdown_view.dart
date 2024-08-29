@@ -26,37 +26,40 @@ class _DropdownViewState extends State<DropdownView> {
   @override
   void initState() {
     super.initState();
-    // Initialize _selectedItem with defaultValue if provided, otherwise first item in the list
+    // Initialize _selectedItem with defaultValue if provided and exists in items, otherwise fallback to the first item if available
     if (widget.defaultValue != null &&
         widget.items.contains(widget.defaultValue)) {
       _selectedItem = widget.defaultValue!;
     } else {
-      _selectedItem = widget.items[0];
+      _selectedItem = widget.items.isNotEmpty ? widget.items[0] : '';
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButton(
+    return DropdownButton<String>(
       dropdownColor: widget.backgroundColor,
       style: TextStyle(
         color: widget.textColor,
         fontSize: 20,
-        backgroundColor: widget.backgroundColor,
       ),
-      value: _selectedItem,
+      value: _selectedItem.isNotEmpty
+          ? _selectedItem
+          : null, // Avoid passing empty string if no items
       items: widget.items.map((String item) {
-        return DropdownMenuItem(
+        return DropdownMenuItem<String>(
           value: item,
           child: Text(item),
         );
       }).toList(),
       onChanged: (value) {
-        setState(() {
-          _selectedItem = value!;
-        });
-        if (widget.onChanged != null) {
-          widget.onChanged!(value!);
+        if (value != null) {
+          setState(() {
+            _selectedItem = value;
+          });
+          if (widget.onChanged != null) {
+            widget.onChanged!(value);
+          }
         }
       },
     );
