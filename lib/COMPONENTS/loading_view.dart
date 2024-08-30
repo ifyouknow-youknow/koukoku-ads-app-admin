@@ -9,7 +9,7 @@ class LoadingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox.expand(
+    return const Positioned.fill(
       child: BlurView(
         intensity: 3,
         color: Color.fromARGB(183, 20, 19, 19),
