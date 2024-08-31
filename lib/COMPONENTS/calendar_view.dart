@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:iic_app_template_flutter/COMPONENTS/button_view.dart';
-import 'package:iic_app_template_flutter/COMPONENTS/padding_view.dart';
-import 'package:iic_app_template_flutter/COMPONENTS/text_view.dart';
-import 'package:iic_app_template_flutter/FUNCTIONS/colors.dart';
-import 'package:iic_app_template_flutter/FUNCTIONS/date.dart';
+import 'package:koukoku_ads_admin/COMPONENTS/button_view.dart';
+import 'package:koukoku_ads_admin/COMPONENTS/padding_view.dart';
+import 'package:koukoku_ads_admin/COMPONENTS/text_view.dart';
+import 'package:koukoku_ads_admin/FUNCTIONS/colors.dart';
+import 'package:koukoku_ads_admin/FUNCTIONS/date.dart';
 
 class CalendarView extends StatefulWidget {
   final Color backgroundColor;

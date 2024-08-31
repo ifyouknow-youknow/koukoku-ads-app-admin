@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iic_app_template_flutter/MODELS/firebase.dart'; // Adjust the import path as needed
+import 'package:koukoku_ads_admin/MODELS/firebase.dart'; // Adjust the import path as needed
 
 class AsyncImageView extends StatefulWidget {
   const AsyncImageView({
@@ -8,12 +8,14 @@ class AsyncImageView extends StatefulWidget {
     this.width = 100, // Default width
     this.height = 100, // Default height
     this.radius = 0, // Default radius for container
+    this.objectFit = BoxFit.contain, // Default fit
   });
 
   final String imagePath;
   final double width;
   final double height;
   final double radius;
+  final BoxFit objectFit; // Added objectFit property
 
   @override
   _AsyncImageViewState createState() => _AsyncImageViewState();
@@ -49,18 +51,15 @@ class _AsyncImageViewState extends State<AsyncImageView> {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(widget.radius),
-      child: Container(
+      child: SizedBox(
         width: widget.width,
         height: widget.height,
-        decoration: BoxDecoration(
-          color: Colors.grey[300], // Placeholder color while loading
-        ),
         child: imageUrl.isNotEmpty
             ? Image.network(
                 imageUrl,
                 width: widget.width,
                 height: widget.height,
-                fit: BoxFit.cover, // Adjust the fit based on your requirement
+                fit: widget.objectFit, // Use the objectFit property
               )
             : const Center(
                 child:

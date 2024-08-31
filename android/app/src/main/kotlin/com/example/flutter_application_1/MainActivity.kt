@@ -1,4 +1,4 @@
-package com.iicdev.FlutterAppTemplate
+package com.iicdev.KoukokuAdsAdmin
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:iic_app_template_flutter/COMPONENTS/alert_view.dart';
-import 'package:iic_app_template_flutter/COMPONENTS/button_view.dart';
-import 'package:iic_app_template_flutter/COMPONENTS/loading_view.dart';
-import 'package:iic_app_template_flutter/COMPONENTS/text_view.dart';
-import 'package:iic_app_template_flutter/MODELS/DATAMASTER/datamaster.dart';
+import 'package:koukoku_ads_admin/COMPONENTS/alert_view.dart';
+import 'package:koukoku_ads_admin/COMPONENTS/button_view.dart';
+import 'package:koukoku_ads_admin/COMPONENTS/loading_view.dart';
+import 'package:koukoku_ads_admin/COMPONENTS/text_view.dart';
+import 'package:koukoku_ads_admin/MODELS/DATAMASTER/datamaster.dart';
 
 class MainView extends StatefulWidget {
   final DataMaster dm;
