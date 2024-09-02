@@ -163,135 +163,140 @@ class _RequestsState extends State<Requests> {
           ),
         ),
         // MAIN
-        Expanded(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // LIST
-              SingleChildScrollView(
-                child: BorderView(
-                  top: true,
-                  topColor: Colors.black26,
-                  child: Column(
-                    children: [
-                      ..._requests.map((req) {
-                        return BorderView(
-                          bottom: true,
-                          right: true,
-                          bottomColor: Colors.black26,
-                          rightColor: Colors.black26,
-                          child: PaddingView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                TextView(
-                                  text: req['userId'],
-                                ),
-                                Row(
-                                  children: [
-                                    TextView(
-                                      text: req['chosenOption'],
-                                    ),
-                                    const SizedBox(
-                                      width: 15,
-                                    ),
-                                    TextView(
-                                      text: '${req['views']} views',
-                                    )
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
-                        );
-                      }),
-                    ],
-                  ),
-                ),
-              ),
-              // AD
-              Expanded(
-                  child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  FutureView(
-                      future: _fetchAllRequests(),
-                      childBuilder: (data) {
-                        final first = data.first;
-                        return AsyncImageView(
-                          imagePath: first['imagePath'],
-                          width: first['chosenOption'] == '2 x 1'
-                              ? getWidth(context) * 0.7
-                              : getWidth(context) * 0.4,
-                          height: first['chosenOption'] == '2 x 1'
-                              ? getWidth(context) * 0.35
-                              : getWidth(context) * 0.4,
-                        );
-                      },
-                      emptyWidget: const Center(
-                        child: TextView(
-                          text: 'Failed to load',
-                          size: 20,
-                        ),
-                      )),
-                  PaddingView(
-                    paddingBottom: 0,
-                    paddingRight: 20,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        Flexible(
+          child: Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // LIST
+                SingleChildScrollView(
+                  child: BorderView(
+                    top: true,
+                    topColor: Colors.black26,
+                    child: Column(
                       children: [
-                        RoundedCornersView(
-                          topLeft: 10,
-                          topRight: 10,
-                          bottomLeft: 0,
-                          bottomRight: 0,
-                          child: ButtonView(
-                            paddingTop: 10,
-                            paddingBottom: 35,
-                            paddingLeft: 30,
-                            paddingRight: 30,
-                            backgroundColor: hexToColor("#FF1617"),
-                            child: const TextView(
-                              text: 'Reject',
-                              color: Colors.white,
-                              size: 20,
-                              weight: FontWeight.w500,
+                        ..._requests.map((req) {
+                          return BorderView(
+                            bottom: true,
+                            right: true,
+                            bottomColor: Colors.black26,
+                            rightColor: Colors.black26,
+                            child: PaddingView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  TextView(
+                                    text: req['userId'],
+                                  ),
+                                  Row(
+                                    children: [
+                                      TextView(
+                                        text: req['chosenOption'],
+                                      ),
+                                      const SizedBox(
+                                        width: 15,
+                                      ),
+                                      TextView(
+                                        text: '${req['views']} views',
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
-                            onPress: () {
-                              // REJECT
-                              onReject();
-                            },
-                          ),
-                        ),
-                        RoundedCornersView(
-                          topLeft: 10,
-                          topRight: 10,
-                          bottomLeft: 0,
-                          bottomRight: 0,
-                          child: ButtonView(
-                            paddingTop: 10,
-                            paddingBottom: 35,
-                            paddingLeft: 30,
-                            paddingRight: 30,
-                            backgroundColor: hexToColor("#19DC3F"),
-                            child: const TextView(
-                              text: 'Approve',
-                              color: Colors.white,
-                              size: 20,
-                              weight: FontWeight.w500,
-                            ),
-                            onPress: () {
-                              // REJECT
-                              onApprove();
-                            },
-                          ),
-                        )
+                          );
+                        }),
                       ],
                     ),
-                  )
-                ],
-              ))
-            ],
+                  ),
+                ),
+                // AD
+                Expanded(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    FutureView(
+                        future: _fetchAllRequests(),
+                        childBuilder: (data) {
+                          final first = data.first;
+                          return AsyncImageView(
+                            imagePath: first['imagePath'],
+                            width: first['chosenOption'] == '2 x 1'
+                                ? getWidth(context) * 0.7
+                                : getWidth(context) * 0.4,
+                            height: first['chosenOption'] == '2 x 1'
+                                ? getWidth(context) * 0.35
+                                : getWidth(context) * 0.4,
+                          );
+                        },
+                        emptyWidget: const Center(
+                          child: TextView(
+                            text: 'Failed to load',
+                            size: 20,
+                          ),
+                        )),
+                    const Spacer(),
+                    PaddingView(
+                      paddingBottom: 0,
+                      paddingRight: 20,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          RoundedCornersView(
+                            topLeft: 10,
+                            topRight: 10,
+                            bottomLeft: 0,
+                            bottomRight: 0,
+                            child: ButtonView(
+                              paddingTop: 10,
+                              paddingBottom: 35,
+                              paddingLeft: 30,
+                              paddingRight: 30,
+                              backgroundColor: hexToColor("#FF1617"),
+                              child: const TextView(
+                                text: 'Reject',
+                                color: Colors.white,
+                                size: 20,
+                                weight: FontWeight.w500,
+                                wrap: false,
+                              ),
+                              onPress: () {
+                                // REJECT
+                                onReject();
+                              },
+                            ),
+                          ),
+                          RoundedCornersView(
+                            topLeft: 10,
+                            topRight: 10,
+                            bottomLeft: 0,
+                            bottomRight: 0,
+                            child: ButtonView(
+                              paddingTop: 10,
+                              paddingBottom: 35,
+                              paddingLeft: 30,
+                              paddingRight: 30,
+                              backgroundColor: hexToColor("#19DC3F"),
+                              child: const TextView(
+                                text: 'Approve',
+                                color: Colors.white,
+                                size: 20,
+                                weight: FontWeight.w500,
+                                wrap: false,
+                              ),
+                              onPress: () {
+                                // REJECT
+                                onApprove();
+                              },
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ))
+              ],
+            ),
           ),
         )
       ],
