@@ -57,7 +57,7 @@ class _RequestsState extends State<Requests> {
     final success = await firebase_CreateDocument(
         '${appName}_Campaigns', randomString(25), {
       'paymentIntent': tempChosenAd['paymentIntent'],
-      'chosenOption': tempChosenAd['choes'],
+      'chosenOption': tempChosenAd['chosenOption'],
       'date': tempChosenAd['date'],
       'expDate': tempChosenAd['expDate'],
       'imagePath': tempChosenAd['imagePath'],
@@ -81,6 +81,7 @@ class _RequestsState extends State<Requests> {
               'Congratulations! Your ad was approved and is now showing up on customer devices!',
           'date': DateTime.now().millisecondsSinceEpoch
         });
+
         setState(() {
           widget.dm.setToggleLoading(false);
           _requests = removeObjById(
@@ -111,6 +112,7 @@ class _RequestsState extends State<Requests> {
             'We regret to inform you that your ad was not approved because it contained content that may be deemed irrelevant or inappropriate. Please consider revising your ad and submitting it again with content that better aligns with our guidelines.',
         'date': DateTime.now().millisecondsSinceEpoch
       });
+      _fetchRequests();
       setState(() {
         widget.dm.setToggleLoading(false);
         _requests = removeObjById(
