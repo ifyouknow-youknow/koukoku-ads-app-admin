@@ -64,7 +64,11 @@ class _RequestsState extends State<Requests> {
       'isCoupon': tempChosenAd['isCoupon'],
       'isRepeating': tempChosenAd['isRepeating'],
       'userId': tempChosenAd['userId'],
-      'views': tempChosenAd['views']
+      'views': tempChosenAd['views'],
+      'active': tempChosenAd['active'],
+      'address': tempChosenAd['address'],
+      'category': tempChosenAd['category'],
+      'geohash': tempChosenAd['geohash']
     });
 
     if (success) {
@@ -81,7 +85,7 @@ class _RequestsState extends State<Requests> {
               'Congratulations! Your ad was approved and is now showing up on customer devices!',
           'date': DateTime.now().millisecondsSinceEpoch
         });
-
+        _fetchRequests();
         setState(() {
           widget.dm.setToggleLoading(false);
           _requests = removeObjById(
